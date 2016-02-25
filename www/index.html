@@ -1,0 +1,74 @@
+<!-- // Simple Weather app
+// Created by Andrew Ware January 2016
+// Project for Gordon College's Mobile Development course
+// Weather data fetched from forecast.io
+// Zip code to lat/long coord conversion by Google Maps API -->
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link rel="stylesheet" href="lib/ionic/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="lib/ionic/css/bootstrap/paper/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" href="">
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+    <!-- your app's js -->
+    <script src="lib/ionic/js/jQuery/jquery-1.12.0.min.js"></script>
+    <script src="lib/ionic/js/bootstrap/bootstrap.min.js"></script>
+    <script src="js/credentials.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/main.js"></script>
+    <script src="lib/ionic/js/jQuery/jquery-ui.min.js"></script>
+  </head>
+
+  <body ng-app="simpleWeather">
+    <div class="loading" id="loading"> <img src="img/loading.gif" alt="loading" /> </div>
+    <div class="wrapper" id="loading" style="display: none;">
+      <div class="container main-container" ng-controller="weatherController" ng-init="init()">
+        <div class="row">
+          <div class="col-xs-10 city-title">
+            <h3>{{weather.city}}</h3> </div>
+          <div class="col-xs-2 refresh-wrapper">
+            <a ng-click="init(true); refresh()">
+              <button class="btn btn-default refresh"> <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> </button>
+            </a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4 main-icon-div"> <img class="main-img" ng-src="{{weather.icon.img}}" alt="" /> </div>
+          <div class="col-xs-4 main-temp-div"> <span class="weather-span temperatureMean">{{weather.temperature.mean}}&#176;</span> <span class="weather-span temperatureMin">{{weather.temperature.high}}&#176; | {{weather.temperature.low}}&#176;</span> </div>
+          <div class="col-xs-4"> <span class="weather-span windSpeed">wind: {{weather.windSpeed}}mph</span> <span class="weather-span humidity">humidity: {{weather.humidity}}%</span> </div>
+        </div> <span class="weather-span info-span currently">{{weather.summary}}</span>
+        <div class="container zip-container">
+          <form ng-submit="getLatLngAndWeather(zipCode)">
+            <input type="text" placeholder="01984" maxLength="5" ng-model="zipCode" name="zipCode" class="zip-input"> </form>
+          <button class="btn btn-default zip-button" ng-click="getLatLngAndWeather(zipCode)" type="submit">change zip</button>
+        </div>
+        <div class="container seven-day-container">
+          <h5 class="seven-day-title">7 Day Forecast</h5>
+          <ul class="nav nav-tabs" id="forecast-nav">
+            <li role="presentation" class="active" ng-click="setDay(1)" id="day0"><a onclick="setActiveDay(0)">{{getWeek()[0]}}</a></li>
+            <li role="presentation" ng-click="setDay(2)" id="day1"><a onclick="setActiveDay(1)">{{getWeek()[1]}}</a></li>
+            <li role="presentation" ng-click="setDay(3)" id="day2"><a onclick="setActiveDay(2)">{{getWeek()[2]}}</a></li>
+            <li role="presentation" ng-click="setDay(4)" id="day3"><a onclick="setActiveDay(3)">{{getWeek()[3]}}</a></li>
+            <li role="presentation" ng-click="setDay(5)" id="day4"><a onclick="setActiveDay(4)">{{getWeek()[4]}}</a></li>
+            <li role="presentation" ng-click="setDay(6)" id="day5"><a onclick="setActiveDay(5)">{{getWeek()[5]}}</a></li>
+            <li role="presentation" ng-click="setDay(7)" id="day6"><a onclick="setActiveDay(6)">{{getWeek()[6]}}</a></li>
+          </ul>
+          <div class="container seven-day-info-container"> <img class="seven-day-icon" ng-src="{{sevenDay.icon.img}}" alt="" /> <span class="weather-span seven-day-temperature">{{sevenDay.temperature}}&#176;</span> <span class="weather-span seven-day-summary">{{sevenDay.summary}}</span> </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>
