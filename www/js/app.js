@@ -89,9 +89,9 @@ angular.module('simpleWeather', ['ionic'])
     $scope.getZip = function(lat, lng) {
       $http.get('http://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lng + '&sensor=true')
         .then(function(data) {
-          $scope.zip = data.data.results[2].address_components[0].long_name;
-          var city = data.data.results[1].address_components[0].long_name;
-          var state = data.data.results[1].address_components[2].short_name;
+          $scope.zip = data.data.results[2].address_components[0].long_name; //long_name
+          var city = data.data.results[1].address_components[0].long_name; //city
+          var state = data.data.results[1].address_components[2].short_name; //state
           if (state.length > 0 && state.length < 3) $scope.weather.city = city + ', ' + state;
           else $scope.weather.city = city;
         }).catch(function(err) {
@@ -100,17 +100,17 @@ angular.module('simpleWeather', ['ionic'])
     }
 
     $scope.getWeather = function(lat, lng) {
-      $http.jsonp('https://api.forecast.io/forecast/' + credentials.forecastKey + '/' + lat + ',' + lng + '?callback=JSON_CALLBACK')
+      $http.get('http://andrew-ware-weather.appspot.com/?lat=' + lat + '&lon=' + lng)
         .then(function(data) {
-          $scope.weather.currently = data.data.currently.summary;
-          $scope.weather.summary = data.data.daily.data[0].summary;
+          $scope.weather.currently = data.data.currently.currently;
+          $scope.weather.summary = data.data.daily[0].summary
           $scope.weather.icon = $scope.getIcon($scope.weather.summary.toLowerCase());
           $scope.weather.temperature.mean = Math.floor(data.data.currently.temperature);
-          $scope.weather.temperature.low = Math.floor(data.data.daily.data[0].temperatureMax);
-          $scope.weather.temperature.high = Math.floor(data.data.daily.data[0].temperatureMin);
+          $scope.weather.temperature.low = Math.floor(data.data.daily[0].maxTemp);
+          $scope.weather.temperature.high = Math.floor(data.data.daily[0].minTemp);
           $scope.weather.windSpeed = Math.floor(data.data.currently.windSpeed);
           $scope.weather.humidity = Math.floor(data.data.currently.humidity * 100);
-          $scope.forecast = data.data.daily.data;
+          $scope.forecast = data.data.daily;
           $scope.setDay(1);
         }).catch(function(err) {
           console.log(err);
@@ -160,7 +160,7 @@ angular.module('simpleWeather', ['ionic'])
     $scope.setDay = function(day) {
       $scope.sevenDay.summary = $scope.forecast[day].summary;
       $scope.sevenDay.icon = $scope.getIcon($scope.forecast[day].summary.toLowerCase(), true);
-      $scope.sevenDay.temperature = (Math.floor($scope.forecast[day].temperatureMax) + Math.floor($scope.forecast[day].temperatureMin)) / 2;
+      $scope.sevenDay.temperature = (Math.floor($scope.forecast[day].maxTemp) + Math.floor($scope.forecast[day].minTemp)) / 2;
     };
 
     var removeLoadingGif = function() {
@@ -202,8 +202,8 @@ angular.module('simpleWeather', ['ionic'])
         .then(function(position) {
           var latitude = position.latitutde;
           var longitude = position.longitude;
-          $scope.getZip(latitude, longitude);
-          $scope.getWeather(latitude, longitude);
+          $scope.getZip(latitutde, longitude);
+          $scope.getWeather(latitutde, longitude);
           if (!notFirstTime) {
             removeLoadingGif();
             startColorChanger(3000);

@@ -41,8 +41,8 @@ img {
 }
 
 .main-img {
-  width: 8em;
-  height: 8em;
+  width: 7.5em;
+  height: 7.5em;
 }
 
 .main-container {
@@ -72,6 +72,10 @@ img {
 .city-tile {
   position: relative;
   width: 100%;
+}
+
+.city-header {
+  margin-bottom: 0.75 em;
 }
 
 .refresh-wrapper {
