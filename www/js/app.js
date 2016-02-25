@@ -204,17 +204,15 @@ angular.module('simpleWeather', ['ionic'])
                     var longitude = position.longitude;
                     $scope.getZip(latitude, longitude);
                     $scope.getWeather(latitude, longitude);
-                    if (!notFirstTime) {
-                        removeLoadingGif();
-                        startColorChanger(3000);
-                    }
+                    // if (!notFirstTime) {
+                    //     startColorChanger(3000);
+                    // }
                 }, function(reason) {
                     console.log(reason);
                     $scope.getLatLngAndWeather($scope.zip); // gets lat and lng using Google Maps API then calls getWeather
-                    if (!notFirstTime) {
-                        removeLoadingGif();
-                        startColorChanger(3000);
-                    }
+                    // if (!notFirstTime) {
+                    //     startColorChanger(3000);
+                    // }
                 });
         };
 

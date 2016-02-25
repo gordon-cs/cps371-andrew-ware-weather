@@ -1,7 +1,7 @@
 html {
   color: rgba(255, 255, 255, 1);
   width: 100%;
-  background-color: #8ADCB3;
+  background-color: #2A2826;
 }
 
 body {
@@ -30,8 +30,8 @@ img {
 }
 
 .loading img {
-  width: 30px;
-  height: 30px;
+  width: 300px;
+  height: 225px;
 }
 
 .wrapper {
@@ -64,6 +64,10 @@ img {
   width: 100%;
 }
 
+.main-icon-row {
+  margin-bottom: 0.75em;
+}
+
 .main-icon-div,
 .main-temp-div {
   text-align: center;
@@ -90,7 +94,7 @@ img {
   background-color: rgba(255, 255, 255, 0.6);
   box-shadow: none;
   -webkit-box-shadow: none;
-  color: #8ADCB3;
+  color: #313131;
   display: inline-block;
 }
 
@@ -104,6 +108,7 @@ img {
 
 .refresh:hover {
   color: rgba(255, 255, 255, 0.6);
+  background-color: #212121;
 }
 
 .temperatureMean {
@@ -262,7 +267,7 @@ input[type=text]:focus {
   background-color: rgba(255, 255, 255, 0.6);
   box-shadow: none;
   -webkit-box-shadow: none;
-  color: #8ADCB3;
+  color: #212121;
   display: inline-block;
   float: left;
   margin-top: -2px;
