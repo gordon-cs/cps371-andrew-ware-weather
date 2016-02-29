@@ -1,7 +1,7 @@
 # cps371-andrew-ware-weather
 A simple weather app created for a course project. Uses ionic framework and AngularJS and fetches data from forecast.io
 
-####Updates
+####Updates from User Study feedback (2/29/16)
 1. Updated refresh button with loading gif response, so user knows something is happening
 2. Seven day forecast is now vertical instead of horizontal, for more clarity
 3. Color scheme is dark background with white text for easier readability
