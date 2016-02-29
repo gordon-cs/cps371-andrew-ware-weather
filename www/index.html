@@ -34,7 +34,6 @@
 <body ng-app="simpleWeather">
     <div class="loading" id="loading"> <img src="img/loading.gif" alt="loading" /> </div>
     <div class="wrapper" id="loading" style="display: none;">
-    <!-- <div class="wrapper" id="loading"> -->
         <div class="container main-container" ng-controller="weatherController" ng-init="init()">
             <div class="row">
                 <div class="col-xs-10 city-title">
@@ -53,16 +52,7 @@
                     <input type="text" maxLength="5" ng-model="zipCode" name="zipCode" class="zip-input"> </form>
                 <button class="btn btn-default zip-button" ng-click="getLatLngAndWeather(zipCode)" type="submit">change zip</button>
             </div>
-            <div class="container seven-day-container">
-                <!-- <ul class="nav nav-tabs" id="forecast-nav">
-                    <li role="presentation" class="active" ng-click="setDay(1)" id="day0"><a onclick="setActiveDay(0)">{{getWeek()[0]}}</a></li>
-                    <li role="presentation" ng-click="setDay(2)" id="day1"><a onclick="setActiveDay(1)">{{getWeek()[1]}}</a></li>
-                    <li role="presentation" ng-click="setDay(3)" id="day2"><a onclick="setActiveDay(2)">{{getWeek()[2]}}</a></li>
-                    <li role="presentation" ng-click="setDay(4)" id="day3"><a onclick="setActiveDay(3)">{{getWeek()[3]}}</a></li>
-                    <li role="presentation" ng-click="setDay(5)" id="day4"><a onclick="setActiveDay(4)">{{getWeek()[4]}}</a></li>
-                    <li role="presentation" ng-click="setDay(6)" id="day5"><a onclick="setActiveDay(5)">{{getWeek()[5]}}</a></li>
-                    <li role="presentation" ng-click="setDay(7)" id="day6"><a onclick="setActiveDay(6)">{{getWeek()[6]}}</a></li>
-                </ul> -->
+            <div class="container seven-day-container">                
                 <ul class="seven-day-ul">
                     <a class="seven-day-a">
                         <li class="seven-day-li" id="day0">
@@ -135,7 +125,6 @@
                         </li>
                     </a>
                 </ul>
-                <!-- <div class="container seven-day-info-container"> <img class="seven-day-icon" ng-src="{{sevenDay.icon.img}}" alt="" /> <span class="weather-span seven-day-temperature">{{sevenDay.temperature}}&#176;</span> <span class="weather-span seven-day-summary">{{sevenDay.summary}}</span> </div> -->
             </div>
         </div>
     </div>

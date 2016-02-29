@@ -1,5 +1,5 @@
 // Simple Weather app
-// Created by Andrew Ware January 2016
+// Created by Andrew Ware January - March 2016
 // Project for Gordon College's Mobile Development course
 // Weather data fetched from forecast.io
 // Zip code to lat/long coord conversion by Google Maps API
@@ -140,9 +140,6 @@ angular.module('simpleWeather', ['ionic'])
                             }
                             $scope.forecast[i].summary += ".";
                         }
-                        // if ($scope.forecast[i].summary.length('')){
-                        //     $scope.forecast[i].summary = $scope.forecast[i].summary.replace('???', '-');
-                        // }
                     }
 
                 }).catch(function(err) {
