@@ -39,7 +39,7 @@ angular.module('simpleWeather', ['ionic'])
             });
         };
 
-        $scope.days = ['Su', 'M', 'T', 'W', 'T', 'F', 'Sa'];
+        $scope.days = ['Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa'];
         $scope.getWeek = function() {
             var week = [];
             var today = $scope.days[(new Date()).getDay()];
@@ -53,7 +53,6 @@ angular.module('simpleWeather', ['ionic'])
             temperature: {}
         };
         $scope.forecast = [];
-        $scope.sevenDay = {};
         $scope.zip = '';
         $scope.icons = {
             clear: 'img/clear.svg',
@@ -72,7 +71,6 @@ angular.module('simpleWeather', ['ionic'])
             $scope.zip = zipCode;
             $http.get('http://maps.googleapis.com/maps/api/geocode/json?address=' + zipCode)
                 .then(function(data) {
-                    setActiveDay(0);
                     var lat = data.data.results[0].geometry.location.lat;
                     var lng = data.data.results[0].geometry.location.lng;
                     var address = data.data.results[0].formatted_address.replace(/,/g, "").split(" ");
@@ -89,9 +87,9 @@ angular.module('simpleWeather', ['ionic'])
         $scope.getZip = function(lat, lng) {
             $http.get('http://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lng + '&sensor=true')
                 .then(function(data) {
-                    $scope.zip = data.data.results[2].address_components[0].long_name; //long_name
-                    var city = data.data.results[1].address_components[0].long_name; //city
-                    var state = data.data.results[1].address_components[2].short_name; //state
+                    $scope.zip = data.data.results[2].address_components[0].long_name;
+                    var city = data.data.results[1].address_components[0].long_name;
+                    var state = data.data.results[1].address_components[2].short_name;
                     if (state.length > 0 && state.length < 3) $scope.weather.city = city + ', ' + state;
                     else $scope.weather.city = city;
                 }).catch(function(err) {
@@ -111,7 +109,42 @@ angular.module('simpleWeather', ['ionic'])
                     $scope.weather.windSpeed = Math.floor(data.data.currently.windSpeed);
                     $scope.weather.humidity = Math.floor(data.data.currently.humidity * 100);
                     $scope.forecast = data.data.daily;
-                    $scope.setDay(1);
+
+                    for (var i = 0; i < $scope.forecast.length; i++) {
+                        $scope.forecast[i].maxTemp = Math.round($scope.forecast[i].maxTemp);
+                        $scope.forecast[i].minTemp = Math.round($scope.forecast[i].minTemp);
+                        $scope.forecast[i].temperature = Math.ceil((Math.floor($scope.forecast[i].maxTemp) + Math.floor($scope.forecast[i].minTemp)) / 2);
+                        $scope.forecast[i].icon = $scope.getIcon($scope.forecast[i].summary.toLowerCase(), true);
+                        if ($scope.forecast[i].summary.includes(',')) {
+                            $scope.forecast[i].summary = $scope.forecast[i].summary.split(',')[0] + '.';
+                        }
+                        if ($scope.forecast[i].summary.includes('???')) {
+                            $scope.forecast[i].summary = $scope.forecast[i].summary.replace('???', '-');
+                        }
+                        if ($scope.forecast[i].summary.length > 40) {
+                            if (/\d/.test($scope.forecast[i].summary)) {
+                                // summary has numeric precipitation prediction
+                                if ($scope.forecast[i].summary.includes('under')) {
+                                    $scope.forecast[i].summary = $scope.forecast[i].summary.split(' ')[0] + ' ' + $scope.forecast[i].summary.split(' ')[1] + ' ' + $scope.forecast[i].summary.split(' ')[2] + ' ' + $scope.forecast[i].summary.split(' ')[3] + ' ' + $scope.forecast[i].summary.split(' ')[4];
+                                } else {
+                                    $scope.forecast[i].summary = $scope.forecast[i].summary.split(' ')[0] + ' ' + $scope.forecast[i].summary.split(' ')[1] + ' ' + $scope.forecast[i].summary.split(' ')[2];
+                                }
+                            } else {
+                                if ($scope.forecast[i].summary.split(' ')[1].includes('throughout')) {
+                                    $scope.forecast[i].summary = $scope.forecast[i].summary.split(' ')[0] + ' ' + $scope.forecast[i].summary.split(' ')[1] + ' ' + $scope.forecast[i].summary.split(' ')[2] + ' ' + $scope.forecast[i].summary.split(' ')[3];
+                                }
+                                if ($scope.forecast[i].summary.split(' ')[2].includes('throughout')) {
+                                    $scope.forecast[i].summary = $scope.forecast[i].summary.split(' ')[0] + ' ' + $scope.forecast[i].summary.split(' ')[1] + ' ' + $scope.forecast[i].summary.split(' ')[2] + ' ' + $scope.forecast[i].summary.split(' ')[3] + ' ' + $scope.forecast[i].summary.split(' ')[4];
+                                }
+                                $scope.forecast[i].summary = $scope.forecast[i].summary.split(' ')[0] + ' ' + $scope.forecast[i].summary.split(' ')[1];
+                            }
+                            $scope.forecast[i].summary += ".";
+                        }
+                        // if ($scope.forecast[i].summary.length('')){
+                        //     $scope.forecast[i].summary = $scope.forecast[i].summary.replace('???', '-');
+                        // }
+                    }
+
                 }).catch(function(err) {
                     console.log(err);
                 });
@@ -119,10 +152,10 @@ angular.module('simpleWeather', ['ionic'])
 
         $scope.getIcon = function(icon, noNight) {
             var info = {
-                img: '',
-                desc: ''
+                img: $scope.icons.cloudy,
+                desc: 'Cloudy'
             };
-            if (icon.includes('')) {
+            if (icon.includes('clear')) {
                 info.img = $scope.icons.clear;
                 info.desc = 'Clear';
             }
@@ -134,10 +167,6 @@ angular.module('simpleWeather', ['ionic'])
                 info.img = $scope.icons.sunny;
                 info.desc = 'Sunny';
             }
-            if (icon.includes('cloudy') || icon.includes('overcast')) {
-                info.img = $scope.icons.cloudy;
-                info.desc = 'Cloudy';
-            }
             if (icon.includes('fog')) {
                 info.img = $scope.icons.foggy;
                 info.desc = 'Foggy';
@@ -146,7 +175,7 @@ angular.module('simpleWeather', ['ionic'])
                 info.img = $scope.icons.rainy;
                 info.desc = 'Rainy';
             }
-            if (icon.includes('snow') || $scope.weather.summary.includes('flur')) {
+            if (icon.includes('snow') || icon.includes('flur')) {
                 info.img = $scope.icons.snowy;
                 info.desc = 'Snowy';
             }
@@ -155,12 +184,6 @@ angular.module('simpleWeather', ['ionic'])
                 info.desc = 'Thunderstorm';
             }
             return info;
-        };
-
-        $scope.setDay = function(day) {
-            $scope.sevenDay.summary = $scope.forecast[day].summary;
-            $scope.sevenDay.icon = $scope.getIcon($scope.forecast[day].summary.toLowerCase(), true);
-            $scope.sevenDay.temperature = (Math.floor($scope.forecast[day].maxTemp) + Math.floor($scope.forecast[day].minTemp)) / 2;
         };
 
         var removeLoadingGif = function() {
@@ -177,23 +200,7 @@ angular.module('simpleWeather', ['ionic'])
             }, 50);
             setTimeout(function() {
                 removeLoadingGif();
-            }, 2000);
-        }
-
-        var colors = ['#8ADCDC', '#8AB3DC', '#8A8ADC', '#B38ADC', '#DC8ADC', '#DC8AB3', '#DC8A8A', '#DCB38A', '#DCDC8A', '#B3DC8A', '#8ADCB3'];
-        var startColorChanger = function(time) {
-            for (var i = 0; i < colors.length; i++) {
-                $('html').animate({
-                    backgroundColor: colors[i]
-                }, time);
-                $('.zip-button').animate({
-                    color: colors[i]
-                }, time);
-                $('.refresh').animate({
-                    color: colors[i]
-                }, time);
-            }
-            setTimeout(startColorChanger(time), time * colors.length);
+            }, 3500);
         }
 
         $scope.init = function(notFirstTime) {
@@ -204,15 +211,9 @@ angular.module('simpleWeather', ['ionic'])
                     var longitude = position.longitude;
                     $scope.getZip(latitude, longitude);
                     $scope.getWeather(latitude, longitude);
-                    // if (!notFirstTime) {
-                    //     startColorChanger(3000);
-                    // }
                 }, function(reason) {
                     console.log(reason);
                     $scope.getLatLngAndWeather($scope.zip); // gets lat and lng using Google Maps API then calls getWeather
-                    // if (!notFirstTime) {
-                    //     startColorChanger(3000);
-                    // }
                 });
         };
 

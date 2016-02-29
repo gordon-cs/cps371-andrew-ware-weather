@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title></title>
@@ -29,46 +29,116 @@
     <script src="js/app.js"></script>
     <script src="js/main.js"></script>
     <script src="lib/ionic/js/jQuery/jquery-ui.min.js"></script>
-  </head>
+</head>
 
-  <body ng-app="simpleWeather">
+<body ng-app="simpleWeather">
     <div class="loading" id="loading"> <img src="img/loading.gif" alt="loading" /> </div>
     <div class="wrapper" id="loading" style="display: none;">
-      <div class="container main-container" ng-controller="weatherController" ng-init="init()">
-        <div class="row">
-          <div class="col-xs-10 city-title">
-            <h3 class="city-header">{{weather.city}}</h3> </div>
-          <div class="col-xs-2 refresh-wrapper">
-            <a ng-click="init(true); refresh()">
-              <button class="btn btn-default refresh"> <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> </button>
-            </a>
-          </div>
+    <!-- <div class="wrapper" id="loading"> -->
+        <div class="container main-container" ng-controller="weatherController" ng-init="init()">
+            <div class="row">
+                <div class="col-xs-10 city-title">
+                    <h3 class="city-header">{{weather.city}}</h3> </div>
+                <div class="col-xs-2 refresh-wrapper">
+                    <button class="btn btn-default refresh" ng-click="init(true); refresh()"> <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> </button>
+                </div>
+            </div>
+            <div class="row main-icon-row">
+                <div class="col-xs-4 main-icon-div"> <img class="main-img" ng-src="{{weather.icon.img}}" alt="" /> </div>
+                <div class="col-xs-4 main-temp-div"> <span class="weather-span temperatureMean">{{weather.temperature.mean}}&#176;</span> <span class="weather-span temperatureMin">{{weather.temperature.high}}&#176; | {{weather.temperature.low}}&#176;</span> </div>
+                <div class="col-xs-4"> <span class="weather-span windSpeed">wind: {{weather.windSpeed}}mph</span> <span class="weather-span humidity">humidity: {{weather.humidity}}%</span> </div>
+            </div> <span class="weather-span info-span currently">{{weather.summary}}</span>
+            <div class="container zip-container">
+                <form ng-submit="getLatLngAndWeather(zipCode)">
+                    <input type="text" maxLength="5" ng-model="zipCode" name="zipCode" class="zip-input"> </form>
+                <button class="btn btn-default zip-button" ng-click="getLatLngAndWeather(zipCode)" type="submit">change zip</button>
+            </div>
+            <div class="container seven-day-container">
+                <!-- <ul class="nav nav-tabs" id="forecast-nav">
+                    <li role="presentation" class="active" ng-click="setDay(1)" id="day0"><a onclick="setActiveDay(0)">{{getWeek()[0]}}</a></li>
+                    <li role="presentation" ng-click="setDay(2)" id="day1"><a onclick="setActiveDay(1)">{{getWeek()[1]}}</a></li>
+                    <li role="presentation" ng-click="setDay(3)" id="day2"><a onclick="setActiveDay(2)">{{getWeek()[2]}}</a></li>
+                    <li role="presentation" ng-click="setDay(4)" id="day3"><a onclick="setActiveDay(3)">{{getWeek()[3]}}</a></li>
+                    <li role="presentation" ng-click="setDay(5)" id="day4"><a onclick="setActiveDay(4)">{{getWeek()[4]}}</a></li>
+                    <li role="presentation" ng-click="setDay(6)" id="day5"><a onclick="setActiveDay(5)">{{getWeek()[5]}}</a></li>
+                    <li role="presentation" ng-click="setDay(7)" id="day6"><a onclick="setActiveDay(6)">{{getWeek()[6]}}</a></li>
+                </ul> -->
+                <ul class="seven-day-ul">
+                    <a class="seven-day-a">
+                        <li class="seven-day-li" id="day0">
+                            <div class="seven-day-li-content" id="day0-content">
+                                <span class="day" id="day0-name">{{getWeek()[0]}}</span><span class="day-seven-day-content-temp temperature">{{forecast[0].temperature}}</span>
+                            </div>
+                            <div class="seven-day-summary" id="seven-day0-summary" style="display: none">{{forecast[0].summary}}</div>
+                            <div class="seven-day-temp-detail-wrapper"><span class="seven-day-temp-detail" id="seven-day0-temp-detail" style="display: none">{{forecast[0].minTemp}} | {{forecast[0].maxTemp}}</span></div>
+                            <div class="seven-day-icon" id="seven-day0-icon" style="display: none"><img ng-src="{{forecast[0].icon.img}}" alt="" /></div>
+                        </li>
+                    </a>
+                    <a class="seven-day-a">
+                        <li class="seven-day-li" id="day1">
+                            <div class="seven-day-li-content" id="day1-content">
+                                <span class="day" id="day1-name">{{getWeek()[1]}}</span><span class="day-seven-day-content-temp temperature">{{forecast[1].temperature}}</span>
+                            </div>
+                            <div class="seven-day-summary" id="seven-day1-summary" style="display: none">{{forecast[1].summary}}</div>
+                            <div class="seven-day-temp-detail-wrapper"><span class="seven-day-temp-detail" id="seven-day1-temp-detail" style="display: none">{{forecast[1].minTemp}} | {{forecast[1].maxTemp}}</span></div>
+                            <div class="seven-day-icon" id="seven-day1-icon" style="display: none"><img ng-src="{{forecast[1].icon.img}}" alt="" /></div>
+                        </li>
+                    </a>
+                    <a class="seven-day-a">
+                        <li class="seven-day-li" id="day2">
+                            <div class="seven-day-li-content" id="day2-content">
+                                <span class="day" id="day2-name">{{getWeek()[2]}}</span><span class="day-seven-day-content-temp temperature">{{forecast[2].temperature}}</span>
+                            </div>
+                            <div class="seven-day-summary" id="seven-day2-summary" style="display: none">{{forecast[2].summary}}</div>
+                            <div class="seven-day-temp-detail-wrapper"><span class="seven-day-temp-detail" id="seven-day2-temp-detail" style="display: none">{{forecast[2].minTemp}} | {{forecast[2].maxTemp}}</span></div>
+                            <div class="seven-day-icon" id="seven-day2-icon" style="display: none"><img ng-src="{{forecast[2].icon.img}}" alt="" /></div>
+                        </li>
+                    </a>
+                    <a class="seven-day-a">
+                        <li class="seven-day-li" id="day3">
+                            <div class="seven-day-li-content" id="day3-content">
+                                <span class="day" id="day3-name">{{getWeek()[3]}}</span><span class="day-seven-day-content-temp temperature">{{forecast[3].temperature}}</span>
+                            </div>
+                            <div class="seven-day-summary" id="seven-day3-summary" style="display: none">{{forecast[3].summary}}</div>
+                            <div class="seven-day-temp-detail-wrapper"><span class="seven-day-temp-detail" id="seven-day3-temp-detail" style="display: none">{{forecast[3].minTemp}} | {{forecast[3].maxTemp}}</span></div>
+                            <div class="seven-day-icon" id="seven-day3-icon" style="display: none"><img ng-src="{{forecast[3].icon.img}}" alt="" /></div>
+                        </li>
+                    </a>
+                    <a class="seven-day-a">
+                        <li class="seven-day-li" id="day4">
+                            <div class="seven-day-li-content" id="day4-content">
+                                <span class="day" id="day4-name">{{getWeek()[4]}}</span><span class="day-seven-day-content-temp temperature">{{forecast[4].temperature}}</span>
+                            </div>
+                            <div class="seven-day-summary" id="seven-day4-summary" style="display: none">{{forecast[4].summary}}</div>
+                            <div class="seven-day-temp-detail-wrapper"><span class="seven-day-temp-detail" id="seven-day4-temp-detail" style="display: none">{{forecast[4].minTemp}} | {{forecast[4].maxTemp}}</span></div>
+                            <div class="seven-day-icon" id="seven-day4-icon" style="display: none"><img ng-src="{{forecast[4].icon.img}}" alt="" /></div>
+                        </li>
+                    </a>
+                    <a class="seven-day-a">
+                        <li class="seven-day-li" id="day5">
+                            <div class="seven-day-li-content" id="day5-content">
+                                <span class="day" id="day5-name">{{getWeek()[5]}}</span><span class="day-seven-day-content-temp temperature">{{forecast[5].temperature}}</span>
+                            </div>
+                            <div class="seven-day-summary" id="seven-day5-summary" style="display: none">{{forecast[5].summary}}</div>
+                            <div class="seven-day-temp-detail-wrapper"><span class="seven-day-temp-detail" id="seven-day5-temp-detail" style="display: none">{{forecast[5].minTemp}} | {{forecast[5].maxTemp}}</span></div>
+                            <div class="seven-day-icon" id="seven-day5-icon" style="display: none"><img ng-src="{{forecast[5].icon.img}}" alt="" /></div>
+                        </li>
+                    </a>
+                    <a class="seven-day-a">
+                        <li class="seven-day-li" id="day6">
+                            <div class="seven-day-li-content" id="day6-content">
+                                <span class="day" id="day6-name">{{getWeek()[6]}}</span><span class="day-seven-day-content-temp temperature">{{forecast[6].temperature}}</span>
+                            </div>
+                            <div class="seven-day-summary" id="seven-day6-summary" style="display: none">{{forecast[6].summary}}</div>
+                            <div class="seven-day-temp-detail-wrapper"><span class="seven-day-temp-detail" id="seven-day6-temp-detail" style="display: none">{{forecast[6].minTemp}} | {{forecast[6].maxTemp}}</span></div>
+                            <div class="seven-day-icon" id="seven-day6-icon" style="display: none"><img ng-src="{{forecast[6].icon.img}}" alt="" /></div>
+                        </li>
+                    </a>
+                </ul>
+                <!-- <div class="container seven-day-info-container"> <img class="seven-day-icon" ng-src="{{sevenDay.icon.img}}" alt="" /> <span class="weather-span seven-day-temperature">{{sevenDay.temperature}}&#176;</span> <span class="weather-span seven-day-summary">{{sevenDay.summary}}</span> </div> -->
+            </div>
         </div>
-        <div class="row main-icon-row">
-          <div class="col-xs-4 main-icon-div"> <img class="main-img" ng-src="{{weather.icon.img}}" alt="" /> </div>
-          <div class="col-xs-4 main-temp-div"> <span class="weather-span temperatureMean">{{weather.temperature.mean}}&#176;</span> <span class="weather-span temperatureMin">{{weather.temperature.high}}&#176; | {{weather.temperature.low}}&#176;</span> </div>
-          <div class="col-xs-4"> <span class="weather-span windSpeed">wind: {{weather.windSpeed}}mph</span> <span class="weather-span humidity">humidity: {{weather.humidity}}%</span> </div>
-        </div> <span class="weather-span info-span currently">{{weather.summary}}</span>
-        <div class="container zip-container">
-          <form ng-submit="getLatLngAndWeather(zipCode)">
-            <input type="text" placeholder="01984" maxLength="5" ng-model="zipCode" name="zipCode" class="zip-input"> </form>
-          <button class="btn btn-default zip-button" ng-click="getLatLngAndWeather(zipCode)" type="submit">change zip</button>
-        </div>
-        <div class="container seven-day-container">
-          <h5 class="seven-day-title">7 Day Forecast</h5>
-          <ul class="nav nav-tabs" id="forecast-nav">
-            <li role="presentation" class="active" ng-click="setDay(1)" id="day0"><a onclick="setActiveDay(0)">{{getWeek()[0]}}</a></li>
-            <li role="presentation" ng-click="setDay(2)" id="day1"><a onclick="setActiveDay(1)">{{getWeek()[1]}}</a></li>
-            <li role="presentation" ng-click="setDay(3)" id="day2"><a onclick="setActiveDay(2)">{{getWeek()[2]}}</a></li>
-            <li role="presentation" ng-click="setDay(4)" id="day3"><a onclick="setActiveDay(3)">{{getWeek()[3]}}</a></li>
-            <li role="presentation" ng-click="setDay(5)" id="day4"><a onclick="setActiveDay(4)">{{getWeek()[4]}}</a></li>
-            <li role="presentation" ng-click="setDay(6)" id="day5"><a onclick="setActiveDay(5)">{{getWeek()[5]}}</a></li>
-            <li role="presentation" ng-click="setDay(7)" id="day6"><a onclick="setActiveDay(6)">{{getWeek()[6]}}</a></li>
-          </ul>
-          <div class="container seven-day-info-container"> <img class="seven-day-icon" ng-src="{{sevenDay.icon.img}}" alt="" /> <span class="weather-span seven-day-temperature">{{sevenDay.temperature}}&#176;</span> <span class="weather-span seven-day-summary">{{sevenDay.summary}}</span> </div>
-        </div>
-      </div>
     </div>
-  </body>
+</body>
 
 </html>
